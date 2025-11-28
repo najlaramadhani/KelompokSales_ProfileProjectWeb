@@ -9,6 +9,5 @@
     <p>Halo Dunia!
     </p>
     <h1>merista</h1>
-    <h2>icha marisa</h2>
 </body>
 </html>
