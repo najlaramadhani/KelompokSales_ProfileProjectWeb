@@ -5,7 +5,7 @@
  */
 
 // Koneksi ke database db_profil
-$DB = mysqli_connect("localhost", "root", "", "db_profil");
+$DB = mysqli_connect("localhost", "root", "", "profileSales");
 
 // Cek koneksi
 if (!$DB) {
