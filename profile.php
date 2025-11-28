@@ -1,9 +1,4 @@
 <?php
-/**
- * profile.php
- * Menampilkan detail profil mahasiswa berdasarkan ?nim= parameter
- */
-
 include __DIR__ . '/koneksi.php';
 
 // Helper: Escape HTML output
@@ -101,7 +96,7 @@ if ($nim !== '') {
         <div class="header-content">
             <div class="profile-photo">
                 <?php if ($profil_footer && !empty($profil_footer['fotoProfile'])): ?>
-                    <img src="<?php echo h($profil_footer['fotoProfile']); ?>" alt="Foto Profile">
+                    <img src="/KelompokSales_ProfileProjectWeb/uploads/<?php echo h($profil_footer['fotoProfile']); ?>" alt="Foto Profile">
                 <?php else: ?>
                     <img src="hai.jpg" alt="Foto Profile">
                 <?php endif; ?>
@@ -237,7 +232,7 @@ if ($nim !== '') {
                                         <?php echo h($k['namaKeahlian']); ?>
                                     </div>
                                     <?php if (!empty($k['imgKeahlian'])): ?>
-                                        <img src="<?php echo h($k['imgKeahlian']); ?>" 
+                                        <img src="/KelompokSales_ProfileProjectWeb/uploads/<?php echo h($k['imgKeahlian']); ?>" 
                                              alt="<?php echo h($k['namaKeahlian']); ?>" 
                                              style="max-width: 120px; margin-left: 0.8rem; border-radius: 8px;">
                                     <?php endif; ?>
@@ -258,7 +253,7 @@ if ($nim !== '') {
                                 <div class="publication-card">
                                     <div class="publication-image">
                                         <?php if (!empty($pb['imgPublikasi'])): ?>
-                                            <img src="<?php echo h($pb['imgPublikasi']); ?>" 
+                                            <img src="/KelompokSales_ProfileProjectWeb/uploads/<?php echo h($pb['imgPublikasi']); ?>" 
                                                  alt="<?php echo h($pb['judulPublikasi']); ?>">
                                         <?php else: ?>
                                             <img src="paper.jpg" alt="Publikasi">
@@ -294,7 +289,7 @@ if ($nim !== '') {
                             <div class="hobi-item">
                                 <?php if (!empty($aside['imgAside'])): ?>
                                     <span class="hobi-icon" 
-                                          style="background-image: url('<?php echo h($aside['imgAside']); ?>'); 
+                                          style="background-image: url('/KelompokSales_ProfileProjectWeb/uploads/<?php echo h($aside['imgAside']); ?>'); 
                                                   width: 40px; height: 40px; background-size: contain; 
                                                   background-repeat: no-repeat; display: inline-block;"></span>
                                 <?php else: ?>
