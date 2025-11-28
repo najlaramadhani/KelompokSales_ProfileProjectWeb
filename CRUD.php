@@ -6,8 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <p>Halo Dunia!
-    </p>
+    <p>Halo Dunia tipu tipu!</p>
     <h1>merista</h1>
     <h1>Najla</h1>
 </body>
