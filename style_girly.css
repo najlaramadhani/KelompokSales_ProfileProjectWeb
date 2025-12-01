@@ -43,8 +43,13 @@ header::after {
     opacity: 0.4;
 }
 
-header::before { left: 2rem; }
-header::after { right: 2rem; }
+header::before {
+    left: 2rem;
+}
+
+header::after {
+    right: 2rem;
+}
 
 .header-content {
     display: flex;
@@ -159,8 +164,13 @@ nav h3::after {
     transform: translateY(-50%);
 }
 
-nav h3::before { left: 0.5rem; }
-nav h3::after { right: 0.5rem; }
+nav h3::before {
+    left: 0.5rem;
+}
+
+nav h3::after {
+    right: 0.5rem;
+}
 
 nav ul {
     list-style: none;
@@ -195,7 +205,9 @@ nav ul li a::before {
     transition: left 0.5s ease;
 }
 
-nav ul li a:hover::before { left: 100%; }
+nav ul li a:hover::before {
+    left: 100%;
+}
 
 nav ul li a:hover {
     background: #faf5f7;
@@ -295,6 +307,7 @@ main h2::before {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -334,7 +347,9 @@ main h2::before {
     transition: opacity 0.3s ease;
 }
 
-.info-item:hover::before { opacity: 0.3; }
+.info-item:hover::before {
+    opacity: 0.3;
+}
 
 .info-item:hover {
     transform: translateY(-5px) scale(1.02);
@@ -389,9 +404,17 @@ main h2::before {
     background: linear-gradient(135deg, #fff 0%, #faf5f7 100%);
 }
 
-.edu-card:nth-child(1) { animation-delay: 0.05s; }
-.edu-card:nth-child(2) { animation-delay: 0.18s; }
-.edu-card:nth-child(3) { animation-delay: 0.30s; }
+.edu-card:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.edu-card:nth-child(2) {
+    animation-delay: 0.18s;
+}
+
+.edu-card:nth-child(3) {
+    animation-delay: 0.30s;
+}
 
 .edu-icon {
     width: 72px;
@@ -440,6 +463,7 @@ main h2::before {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -760,7 +784,7 @@ footer {
     .content-wrapper {
         flex-direction: column;
     }
-    
+
     nav {
         width: 100%;
         padding: 1rem 0;
@@ -769,18 +793,18 @@ footer {
         display: flex;
         justify-content: center;
     }
-    
+
     nav ul {
         display: flex;
         gap: 1rem;
         padding: 0 1rem;
     }
-    
+
     .container {
         flex-direction: column;
         padding: 1.5rem;
     }
-    
+
     aside {
         width: 100%;
     }
@@ -791,56 +815,56 @@ footer {
     header {
         padding: 2rem 1rem;
     }
-    
+
     header::before,
     header::after {
         display: none;
     }
-    
+
     .header-content {
         flex-direction: column;
         text-align: center;
         gap: 1rem;
     }
-    
+
     .profile-photo {
         margin-right: 0;
     }
-    
+
     header h1 {
         font-size: 1.5rem;
     }
-    
+
     main {
         padding: 1.5rem;
         border-radius: 15px;
     }
-    
+
     main h2 {
         font-size: 1.4rem;
         margin-bottom: 1.5rem;
     }
-    
+
     .skills-container {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         gap: 1rem;
     }
-    
+
     .skill-icon {
         width: 60px;
         height: 60px;
         font-size: 1.5rem;
     }
-    
+
     .publications-container {
         grid-template-columns: 1fr;
     }
-    
+
     .footer-content {
         flex-direction: column;
         gap: 1.5rem;
     }
-    
+
     nav ul {
         flex-wrap: wrap;
     }
@@ -851,41 +875,41 @@ footer {
     header {
         padding: 1.5rem 0.5rem;
     }
-    
+
     .profile-photo img {
         width: 100px;
         height: 100px;
     }
-    
+
     header h1 {
         font-size: 1.2rem;
     }
-    
+
     main {
         padding: 1rem;
         margin: 0.5rem;
     }
-    
+
     .info-grid {
         grid-template-columns: 1fr;
         gap: 0.8rem;
     }
-    
+
     .skills-container {
         grid-template-columns: repeat(2, 1fr);
         gap: 0.8rem;
     }
-    
+
     .skill-item {
         padding: 1rem;
     }
-    
+
     .skill-icon {
         width: 50px;
         height: 50px;
         font-size: 1.2rem;
     }
-    
+
     .skill-name {
         font-size: 0.8rem;
     }
