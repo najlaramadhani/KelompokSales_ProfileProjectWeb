@@ -1,15 +1,32 @@
 <?php
+/**
+ * profile.php - Public Profile Display Page
+ * 
+ * Halaman untuk menampilkan profil mahasiswa dengan parameter ?nim=
+ * Menampilkan: Biodata, Pendidikan, Keahlian, Pengalaman, Publikasi, dan Hobi
+ */
+
 include __DIR__ . '/koneksi.php';
 
-// Helper: Escape HTML output
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * h() - Escape HTML output untuk XSS prevention
+ */
 function h($s) {
     return htmlspecialchars($s, ENT_QUOTES, 'UTF-8');
 }
 
+// ============================================================================
+// FETCH DATA FROM DATABASE
+// ============================================================================
+
 // Ambil NIM dari URL parameter
 $nim = isset($_GET['nim']) ? trim($_GET['nim']) : '';
 
-// Inisialisasi variabel data
+// Inisialisasi array untuk menyimpan data dari database
 $profil_footer = null;
 $biodata = null;
 $pendidikans = [];
@@ -18,25 +35,25 @@ $pengalamans = [];
 $publikasis = [];
 $asides = [];
 
-// Jika NIM tersedia, ambil data dari database
+// Jika NIM tersedia, ambil semua data dari database
 if ($nim !== '') {
     $nim_safe = mysqli_real_escape_string($DB, $nim);
-
-    // 1. Ambil data dari tblProfilFooter (untuk header foto dan footer info)
+    
+    // ---- 1. Footer (Header Foto Profile) ----
     $query = "SELECT * FROM tblProfilFooter WHERE nim = '$nim_safe' LIMIT 1";
     $result = mysqli_query($DB, $query);
     if ($result && mysqli_num_rows($result) > 0) {
         $profil_footer = mysqli_fetch_assoc($result);
     }
-
-    // 2. Ambil data dari Biodata (untuk informasi umum)
+    
+    // ---- 2. Biodata ----
     $query = "SELECT * FROM Biodata WHERE nim = '$nim_safe' LIMIT 1";
     $result = mysqli_query($DB, $query);
     if ($result && mysqli_num_rows($result) > 0) {
         $biodata = mysqli_fetch_assoc($result);
     }
-
-    // 3. Ambil data dari Pendidikan
+    
+    // ---- 3. Pendidikan ----
     $query = "SELECT * FROM Pendidikan WHERE nim = '$nim_safe' ORDER BY tahun DESC";
     $result = mysqli_query($DB, $query);
     if ($result) {
@@ -44,8 +61,8 @@ if ($nim !== '') {
             $pendidikans[] = $row;
         }
     }
-
-    // 4. Ambil data dari Keahlian
+    
+    // ---- 4. Keahlian ----
     $query = "SELECT * FROM Keahlian WHERE nim = '$nim_safe'";
     $result = mysqli_query($DB, $query);
     if ($result) {
@@ -53,8 +70,8 @@ if ($nim !== '') {
             $keahlians[] = $row;
         }
     }
-
-    // 5. Ambil data dari Pengalaman
+    
+    // ---- 5. Pengalaman ----
     $query = "SELECT * FROM Pengalaman WHERE nim = '$nim_safe' ORDER BY tahunMulai DESC";
     $result = mysqli_query($DB, $query);
     if ($result) {
@@ -62,8 +79,8 @@ if ($nim !== '') {
             $pengalamans[] = $row;
         }
     }
-
-    // 6. Ambil data dari Publikasi
+    
+    // ---- 6. Publikasi ----
     $query = "SELECT * FROM Publikasi WHERE nim = '$nim_safe' ORDER BY tahunTerbit DESC";
     $result = mysqli_query($DB, $query);
     if ($result) {
@@ -71,8 +88,8 @@ if ($nim !== '') {
             $publikasis[] = $row;
         }
     }
-
-    // 7. Ambil data dari tblAside (untuk hobi)
+    
+    // ---- 7. Aside (Hobi) ----
     $query = "SELECT * FROM tblAside";
     $result = mysqli_query($DB, $query);
     if ($result) {
@@ -91,7 +108,9 @@ if ($nim !== '') {
     <link rel="stylesheet" href="style_girly.css">
 </head>
 <body>
-    <!-- Header Section -->
+    <!-- ============================================================================
+         HEADER SECTION - Display Foto Profile + Judul
+         ============================================================================ -->
     <header>
         <div class="header-content">
             <div class="profile-photo">
@@ -104,81 +123,72 @@ if ($nim !== '') {
             <div class="header-text">
                 <h1>Profile Mahasiswa</h1>
             </div>
+            <!-- Action: Back index -->
+            <div class="header-actions" style="margin-left:auto;">
+                <a href="index.php" style="display:inline-block;padding:8px 12px;background:#fff;color:#6b4d5e;border-radius:8px;border:1px solid #d4a5c0;text-decoration:none;font-weight:600;">&larr; Kembali</a>
+            </div>
         </div>
     </header>
 
-    <!-- Main Content Wrapper -->
+    <!-- ============================================================================
+         CONTENT WRAPPER - Main Layout (Sidebar + Main Content + Aside)
+         ============================================================================ -->
     <div class="content-wrapper">
-        <!-- Navigation Sidebar (Left) -->
+        
+        <!-- LEFT SIDEBAR - Navigation Menu -->
         <nav>
             <h3>Navigasi</h3>
             <ul>
-                <li>
-                    <a href="#" onclick="showSection('biodata')" class="nav-link active">Biodata</a>
-                </li>
-                <li>
-                    <a href="#" onclick="showSection('pendidikan')" class="nav-link">Pendidikan</a>
-                </li>
-                <li>
-                    <a href="#" onclick="showSection('pengalaman')" class="nav-link">Pengalaman</a>
-                </li>
-                <li>
-                    <a href="#" onclick="showSection('keahlian')" class="nav-link">Keahlian</a>
-                </li>
-                <li>
-                    <a href="#" onclick="showSection('publikasi')" class="nav-link">Publikasi</a>
-                </li>
+                <li><a href="#" onclick="showSection('biodata')" class="nav-link active">Biodata</a></li>
+                <li><a href="#" onclick="showSection('pendidikan')" class="nav-link">Pendidikan</a></li>
+                <li><a href="#" onclick="showSection('pengalaman')" class="nav-link">Pengalaman</a></li>
+                <li><a href="#" onclick="showSection('keahlian')" class="nav-link">Keahlian</a></li>
+                <li><a href="#" onclick="showSection('publikasi')" class="nav-link">Publikasi</a></li>
             </ul>
         </nav>
 
-        <!-- Main Container -->
+        <!-- MAIN CONTAINER -->
         <div class="container">
-            <!-- Main Content Section -->
+            
+            <!-- MAIN CONTENT -->
             <main>
-                <!-- SECTION: Biodata -->
+                
+                <!-- ================================================================
+                     SECTION 1: BIODATA
+                     ================================================================ -->
                 <section id="biodata" class="content-section active">
                     <h2>Biodata</h2>
                     <div class="info-grid">
                         <div class="info-item">
                             <span class="label">Nama:</span>
-                            <span class="value">
-                                <?php echo $biodata ? h($biodata['nama']) : '-'; ?>
-                            </span>
+                            <span class="value"><?php echo $biodata ? h($biodata['nama']) : '-'; ?></span>
                         </div>
                         <div class="info-item">
                             <span class="label">NIM:</span>
-                            <span class="value">
-                                <?php echo $nim ? h($nim) : '-'; ?>
-                            </span>
+                            <span class="value"><?php echo $nim ? h($nim) : '-'; ?></span>
                         </div>
                         <div class="info-item">
                             <span class="label">Tempat Lahir:</span>
-                            <span class="value">
-                                <?php echo $biodata ? h($biodata['tempatLahir']) : '-'; ?>
-                            </span>
+                            <span class="value"><?php echo $biodata ? h($biodata['tempatLahir']) : '-'; ?></span>
                         </div>
                         <div class="info-item">
                             <span class="label">Tanggal Lahir:</span>
-                            <span class="value">
-                                <?php echo $biodata ? h($biodata['tanggalLahir']) : '-'; ?>
-                            </span>
+                            <span class="value"><?php echo $biodata ? h($biodata['tanggalLahir']) : '-'; ?></span>
                         </div>
                         <div class="info-item">
                             <span class="label">Agama:</span>
-                            <span class="value">
-                                <?php echo $biodata ? h($biodata['agama']) : '-'; ?>
-                            </span>
+                            <span class="value"><?php echo $biodata ? h($biodata['agama']) : '-'; ?></span>
                         </div>
                         <div class="info-item">
                             <span class="label">Pendidikan:</span>
-                            <span class="value">
-                                <?php echo $biodata ? h($biodata['pendidikan']) : '-'; ?>
-                            </span>
+                            <span class="value"><?php echo $biodata ? h($biodata['pendidikan']) : '-'; ?></span>
                         </div>
                     </div>
                 </section>
 
-                <!-- SECTION: Pendidikan -->
+                <!-- ================================================================
+                     SECTION 2: PENDIDIKAN (Timeline Style)
+                     ================================================================ -->
                 <section id="pendidikan" class="content-section">
                     <h2>Pendidikan</h2>
                     <div class="education-timeline">
@@ -190,8 +200,7 @@ if ($nim !== '') {
                                         <h3><?php echo h($pd['judul']); ?></h3>
                                         <p class="edu-period"><?php echo h($pd['tahun']); ?></p>
                                         <p class="edu-degree">
-                                            <?php echo h($pd['institusi']); ?> — 
-                                            <?php echo h($pd['jurusan']); ?>
+                                            <?php echo h($pd['institusi']); ?> — <?php echo h($pd['jurusan']); ?>
                                         </p>
                                     </div>
                                 </div>
@@ -202,7 +211,9 @@ if ($nim !== '') {
                     </div>
                 </section>
 
-                <!-- SECTION: Pengalaman -->
+                <!-- ================================================================
+                     SECTION 3: PENGALAMAN
+                     ================================================================ -->
                 <section id="pengalaman" class="content-section">
                     <h2>Pengalaman</h2>
                     <?php if (count($pengalamans) > 0): ?>
@@ -220,22 +231,23 @@ if ($nim !== '') {
                     <?php endif; ?>
                 </section>
 
-                <!-- SECTION: Keahlian -->
+                <!-- ================================================================
+                     SECTION 4: KEAHLIAN (dengan gambar icon)
+                     ================================================================ -->
                 <section id="keahlian" class="content-section">
                     <h2>Keahlian</h2>
                     <div class="skills-container">
                         <?php if (count($keahlians) > 0): ?>
                             <?php foreach ($keahlians as $k): ?>
                                 <div class="skill-item">
-                                    <div class="skill-icon">🔧</div>
+                                    <?php if (!empty($k['imgKeahlian'])): ?>
+                                        <div class="skill-icon" style="background-image: url('/KelompokSales_ProfileProjectWeb/uploads/<?php echo h($k['imgKeahlian']); ?>'); background-size: cover; background-position: center;"></div>
+                                    <?php else: ?>
+                                        <div class="skill-icon">🔧</div>
+                                    <?php endif; ?>
                                     <div class="skill-name">
                                         <?php echo h($k['namaKeahlian']); ?>
                                     </div>
-                                    <?php if (!empty($k['imgKeahlian'])): ?>
-                                        <img src="/KelompokSales_ProfileProjectWeb/uploads/<?php echo h($k['imgKeahlian']); ?>" 
-                                             alt="<?php echo h($k['namaKeahlian']); ?>" 
-                                             style="max-width: 120px; margin-left: 0.8rem; border-radius: 8px;">
-                                    <?php endif; ?>
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -244,7 +256,9 @@ if ($nim !== '') {
                     </div>
                 </section>
 
-                <!-- SECTION: Publikasi -->
+                <!-- ================================================================
+                     SECTION 5: PUBLIKASI (Card Style dengan Gambar)
+                     ================================================================ -->
                 <section id="publikasi" class="content-section">
                     <h2>Publikasi</h2>
                     <div class="publications-container">
@@ -262,13 +276,9 @@ if ($nim !== '') {
                                     <div class="publication-details">
                                         <h3><?php echo h($pb['judulPublikasi']); ?></h3>
                                         <p class="period"><?php echo h($pb['tahunTerbit']); ?></p>
-                                        <p class="publication-venue">
-                                            <?php echo h($pb['penerbit']); ?>
-                                        </p>
+                                        <p class="publication-venue"><?php echo h($pb['penerbit']); ?></p>
                                         <div class="publication-tags">
-                                            <span class="tag">
-                                                <?php echo h($pb['namaTag']); ?>
-                                            </span>
+                                            <span class="tag"><?php echo h($pb['namaTag']); ?></span>
                                         </div>
                                     </div>
                                 </div>
@@ -280,7 +290,7 @@ if ($nim !== '') {
                 </section>
             </main>
 
-            <!-- Aside Section (Right Sidebar) -->
+            <!-- RIGHT SIDEBAR - Hobi/Aside Section -->
             <aside>
                 <h3>Hobi</h3>
                 <div class="hobi-list">
@@ -311,10 +321,12 @@ if ($nim !== '') {
         </div>
     </div>
 
-    <!-- Footer Section -->
+    <!-- ============================================================================
+         FOOTER SECTION - Social Media + Info
+         ============================================================================ -->
     <footer>
         <div class="footer-content">
-            <!-- Left Column: Social Media -->
+            <!-- KOLOM KIRI - Social Media Links -->
             <div class="footer-left">
                 <?php if ($profil_footer && !empty($profil_footer['linkedin'])): ?>
                     <a href="<?php echo h($profil_footer['linkedin']); ?>" 
@@ -341,12 +353,12 @@ if ($nim !== '') {
                 <?php endif; ?>
             </div>
 
-            <!-- Center Column: Copyright -->
+            <!-- KOLOM TENGAH - Copyright -->
             <div class="footer-center">
                 <p>&copy; 2025 All Rights Reserved.</p>
             </div>
 
-            <!-- Right Column: Slogan -->
+            <!-- KOLOM KANAN - Slogan -->
             <div class="footer-right">
                 <?php if ($profil_footer && !empty($profil_footer['slogan'])): ?>
                     <p><?php echo h($profil_footer['slogan']); ?></p>
@@ -355,8 +367,14 @@ if ($nim !== '') {
         </div>
     </footer>
 
-    <!-- JavaScript untuk navigasi section -->
+    <!-- ============================================================================
+         JAVASCRIPT - Section Navigation
+         ============================================================================ -->
     <script>
+        /**
+         * showSection() - Toggle visibility of content sections
+         * @param {string} sectionId - ID of section to show
+         */
         function showSection(sectionId) {
             // Sembunyikan semua section
             var sections = document.getElementsByClassName("content-section");
