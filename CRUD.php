@@ -3,9 +3,7 @@
  * CRUD.php - Management System untuk Profile Mahasiswa
  * 
  * File ini menangani operasi Create, Read, Update, Delete untuk semua tabel profil
- * Struktur: Tab-based interface dengan form tunggal per tab dan data table
- * Upload: Support untuk file gambar (jpg, png, gif)
- */
+  */
 
 include __DIR__ . '/koneksi.php';
 
@@ -109,6 +107,21 @@ function renderField($DB, $field, $value = '') {
     }
     
     echo "</td></tr>";
+}
+
+/**
+ * get_table_columns() - Ambil daftar kolom yang ada pada tabel
+ */
+function get_table_columns($DB, $table) {
+    $cols = array();
+    $table_safe = mysqli_real_escape_string($DB, $table);
+    $res = mysqli_query($DB, "SHOW COLUMNS FROM `" . $table_safe . "`");
+    if ($res) {
+        while ($r = mysqli_fetch_assoc($res)) {
+            $cols[] = $r['Field'];
+        }
+    }
+    return $cols;
 }
 
 // ============================================================================
@@ -300,9 +313,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['table']) && isset($ta
         $cols = array();
         $vals = array();
         $updates = array();
-        
+
+        // Ambil kolom nyata dari tabel agar kita tidak mencoba memasukkan/merubah kolom yang tidak ada
+        $table_columns = get_table_columns($DB, $table);
+
+        // Jika ini tab 'aside' dan kolom 'nim' belum ada di tabel, coba tambahkan kolom secara otomatis
+        // Ini membantu jika database belum dimodifikasi untuk menyimpan NIM pada tblAside.
+        if ($active_tab === 'aside' && in_array('nim', array_column($cfg['fields'], 'name')) && !in_array('nim', $table_columns)) {
+            $table_safe = mysqli_real_escape_string($DB, $table);
+            $alter_sql = "ALTER TABLE `" . $table_safe . "` ADD COLUMN `nim` VARCHAR(50) DEFAULT ''";
+            @mysqli_query($DB, $alter_sql);
+            // Refresh daftar kolom setelah mencoba menambahkan
+            $table_columns = get_table_columns($DB, $table);
+        }
+
         foreach ($cfg['fields'] as $f) {
             $field_name = $f['name'];
+
+            // Lewati jika kolom tidak ada di tabel (mis. tblAside tidak punya kolom nim)
+            if (!in_array($field_name, $table_columns)) {
+                continue;
+            }
             
             if (isset($f['type']) && $f['type'] === 'file') {
                 // Field file: hanya update jika ada upload baru
